@@ -2,16 +2,15 @@ package com.jetbrains.greeting.presentation.Home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,44 +37,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jetbrains.greeting.core.BaseViewState
+import com.jetbrains.greeting.presentation.Navigation.BottomNavItem
 import com.jetbrains.greeting.presentation.components.EmptyView
 import com.jetbrains.greeting.presentation.components.ErrorView
 import com.jetbrains.greeting.presentation.components.LoadingView
-import com.seiko.imageloader.Image
 import com.seiko.imageloader.rememberImagePainter
-import io.ktor.client.HttpClient
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier, navController: NavController, viewModel: HomeViewModel
+    modifier: Modifier = Modifier, navController: NavController
 ) {
+    val viewModel = koinViewModel<HomeViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(viewModel) {
         viewModel.onTriggerEvent(HomeEvent.showProducts)
     }
 
-    HomeScreenBody(modifier, uiState) { viewModel.onTriggerEvent(it) }
+    HomeScreenBody(modifier, uiState, navController) { viewModel.onTriggerEvent(it) }
 
 }
 
+
 @Composable
 fun HomeScreenBody(
-    modifier: Modifier = Modifier, uiState: BaseViewState<*>, onEvent: (HomeEvent) -> Unit
+    modifier: Modifier = Modifier,
+    uiState: BaseViewState<*>,
+    navController: NavController,
+    onEvent: (HomeEvent) -> Unit
 ) {
     when (uiState) {
         is BaseViewState.Data -> {
             val homeState = uiState.value as? HomeState
 
             if (homeState != null) {
-                HomeScreenContent(modifier, homeState, onEvent)
+                HomeScreenContent(modifier, homeState, onEvent, navController)
             }
         }
 
@@ -89,16 +93,22 @@ fun HomeScreenBody(
 
 @Composable
 fun HomeScreenContent(
-    modifier: Modifier, uiState: HomeState, onEvent: (HomeEvent) -> Unit
+    modifier: Modifier,
+    uiState: HomeState,
+    onEvent: (HomeEvent) -> Unit,
+    navController: NavController
 ) {
     BoxWithConstraints {
         val scope = this
         val maxWidth = scope.maxWidth
         var cols = 2
         var modifier = Modifier.fillMaxWidth()
-        if (maxWidth > 840.dp) {
+        if (maxWidth > 840.dp && maxWidth<=1080.dp) {
             cols = 3
             modifier = Modifier.widthIn(max = 1080.dp)
+        }else if (maxWidth > 1080.dp){
+            cols = 4
+            modifier = Modifier.widthIn(max = 1920.dp)
         }
 
         val scrollState = rememberLazyGridState()
@@ -117,7 +127,9 @@ fun HomeScreenContent(
                 products?.let { products ->
                     items(products) { product ->
                         ProductCard(
-                            modifier = Modifier.padding(8.dp),
+                            modifier = Modifier.padding(8.dp).clickable {
+                                navController.navigate("${BottomNavItem.ProductDetails.route}/${product.id.toString()}")
+                            },
                             product.title,
                             product.image,
                             product.price.toString(),
@@ -167,15 +179,18 @@ fun ProductCard(
                 modifier = Modifier.fillMaxWidth().weight(0.2f),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(title ?: "No Image to show", modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    title ?: "No Image to show",
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Box(
                     modifier = Modifier.clip(
                         RoundedCornerShape(50)
                     ).background(MaterialTheme.colorScheme.primary)
                 ) {
-                    IconButton(
-                        onClick = { }
-                    ) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = null,
@@ -210,7 +225,7 @@ fun ProductCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBarHome(modifier: Modifier = Modifier){
+fun SearchBarHome(modifier: Modifier = Modifier) {
 
     SearchBar(
         modifier = modifier.fillMaxWidth(),
@@ -220,7 +235,7 @@ fun SearchBarHome(modifier: Modifier = Modifier){
         active = false,
         placeholder = { Text("Search Products") },
         onActiveChange = {},
-    ){
+    ) {
 
     }
 }

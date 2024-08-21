@@ -1,20 +1,14 @@
 package com.jetbrains.greeting.presentation.Home
 
+import androidx.lifecycle.viewModelScope
 import com.jetbrains.greeting.core.BaseViewState
 import com.jetbrains.greeting.core.CoreViewModel
-import com.jetbrains.greeting.data.ProductsItem
 import com.jetbrains.greeting.model.repository.HomeRepository
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel :CoreViewModel<BaseViewState<HomeState>,HomeEvent>() {
+class HomeViewModel(private val repository:HomeRepository) :CoreViewModel<BaseViewState<HomeState>,HomeEvent>() {
 
     var data = HomeState()
-    val homeRepo = HomeRepository()
     init {
         setState(BaseViewState.Loading)
     }
@@ -26,13 +20,17 @@ class HomeViewModel :CoreViewModel<BaseViewState<HomeState>,HomeEvent>() {
                 fetchProduct()
             }
 
+            is HomeEvent.showSingleProduct ->{
+                startLoading()
+                fetchSingleProduct(event.productId)
+            }
         }
     }
 
     private fun fetchProduct(){
         viewModelScope.launch {
             try {
-                val products = homeRepo.getProductsApi()
+                val products = repository.getProductsApi()
                 data = data.copy(products = products)
                 setState(BaseViewState.Data(data))
             } catch (e: Exception) {
@@ -40,4 +38,17 @@ class HomeViewModel :CoreViewModel<BaseViewState<HomeState>,HomeEvent>() {
             }
         }
     }
+
+    private fun fetchSingleProduct(productId: String) {
+        viewModelScope.launch {
+            try {
+                val product = repository.getSingleProduct(productId)
+                data = data.copy(singleProduct = product)
+                setState(BaseViewState.Data(data))
+            } catch (e: Exception) {
+                handleError(e)
+            }
+        }
+    }
+
 }

@@ -22,18 +22,32 @@ kotlinx-serialization-json = "1.7.0-RC"
 kotlinxDatetime = "0.6.0"
 ktor-client = "2.3.11"
 essenty-lifecycle = "2.0.0"
+lifecycleViewmodelCompose = "2.8.0"
 material3WindowSizeClassMultiplatform = "0.5.0"
 mvvm-core = "0.16.1"
 navigationCompose = "2.7.0-alpha07"
 sqlite-driver = "2.0.2"
+
+koin = "3.5.6"
+koin-compose = "1.0.4"
+koinComposeMultiplatform = "1.2.0-Beta4"
+lifecycleViewModel = "2.8.2"
+
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlite-driver" }
 com-arkivanov-decompose-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decomposeVersion" }
 decompose-extensions-compose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decomposeVersion" }
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
+
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewModel"}
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeMultiplatform" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -58,10 +72,10 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-cl
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor-client" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor-client" }
 essenty-lifecycle = { module = "com.arkivanov.essenty:lifecycle", version.ref = "essenty-lifecycle" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 material3-windowsizeclass-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClassMultiplatform" }
 mvvm-core = { module = "dev.icerock.moko:mvvm-core", version.ref = "mvvm-core" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlite-driver" }
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlite-driver" }
 web-worker-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlite-driver" }
 

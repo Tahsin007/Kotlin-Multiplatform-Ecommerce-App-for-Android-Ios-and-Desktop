@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
 
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+
             //decompose step3
             implementation(libs.com.arkivanov.decompose.decompose)
             implementation(libs.decompose.extensions.compose)
@@ -51,7 +54,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
@@ -66,6 +68,9 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
 
+            implementation(libs.lifecycle.viewmodel.compose)
+
+
             implementation(libs.mvvm.core)
 
             api(libs.image.loader)
@@ -76,13 +81,14 @@ kotlin {
             //decompose step1
 
             //koin step1
-            implementation(libs.koin.core)
-
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.lifecycle.viewmodel)
             implementation(libs.material3.windowsizeclass.multiplatform)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-
             implementation(libs.sqlite.driver)
         }
 

@@ -1,7 +1,10 @@
 package com.jetbrains.greeting
 
 interface Platform {
+    val UIDevice: Any
     val name: String
 }
 
-expect fun getPlatform(): Platform
+expect fun isDesktop():Boolean
+
+//expect fun getPlatform(): Platform

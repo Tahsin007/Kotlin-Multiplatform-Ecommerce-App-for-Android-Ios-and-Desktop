@@ -4,6 +4,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.jetbrains.greeting.di.initKoin
 import com.seiko.imageloader.ImageLoader
 import com.seiko.imageloader.LocalImageLoader
 import com.seiko.imageloader.component.setupDefaultComponents
@@ -13,15 +14,18 @@ import com.seiko.imageloader.intercept.painterMemoryCacheConfig
 import okio.Path.Companion.toOkioPath
 import java.io.File
 
-fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "GreetingKMP",
-    ) {
-        CompositionLocalProvider(
-            LocalImageLoader provides remember { generateImageLoader() },
+fun main(){
+    initKoin()
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "GreetingKMP",
         ) {
-            App()
+            CompositionLocalProvider(
+                LocalImageLoader provides remember { generateImageLoader() },
+            ) {
+                App()
+            }
         }
     }
 }
